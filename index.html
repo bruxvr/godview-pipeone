@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PipeOne - Painel Administrativo Master</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header__left">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span class="hamburger"></span>
+            </button>
+            <div class="logo">
+                <span class="logo__text">PipeOne</span>
+                <span class="logo__subtitle">Admin Master</span>
+            </div>
+        </div>
+        
+        <!-- Date Filter Section -->
+        <div class="header__filters">
+            <div class="date-filter-section">
+                <label for="periodFilter" class="date-filter-label">Período:</label>
+                <select class="form-control date-filter-select" id="periodFilter">
+                    <option value="all">Todos os períodos</option>
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                    <option value="custom">Período personalizado</option>
+                </select>
+                <div class="custom-date-range" id="customDateRange">
+                    <input type="date" class="form-control custom-date-input" id="startDate" placeholder="Data inicial">
+                    <span class="date-separator">até</span>
+                    <input type="date" class="form-control custom-date-input" id="endDate" placeholder="Data final">
+                </div>
+            </div>
+            <div class="period-indicator" id="periodIndicator">
+                <span class="period-text">Exibindo dados de todos os períodos</span>
+            </div>
+        </div>
+        
+        <div class="header__search">
+            <input type="text" class="search-input" id="globalSearch" placeholder="Buscar por ID da conta...">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+        
+        <div class="header__right">
+            <button class="btn btn--outline btn--sm" id="clearFiltersBtn">
+                Limpar Filtros
+            </button>
+            <button class="btn btn--outline btn--sm" id="themeToggle">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <div class="notifications">
+                <button class="notification-btn" id="notificationBtn">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+            <div class="user-profile">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E" alt="Admin" class="user-avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar__header">
+            <h3>Hierarquia de Contas</h3>
+        </div>
+        
+        <div class="sidebar__filters">
+            <select class="form-control" id="statusFilter">
+                <option value="all">Todos os Status</option>
+                <option value="active">Ativo</option>
+                <option value="suspended">Suspenso</option>
+                <option value="trial">Trial</option>
+                <option value="limited">Limitado</option>
+            </select>
+        </div>
+        
+        <div class="account-tree" id="accountTree"></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Loading Indicator -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Aplicando filtros...</div>
+        </div>
+
+        <!-- Summary Cards -->
+        <section class="summary-cards">
+            <div class="card summary-card">
+                <div class="card__body">
+                    <h3>Total de Contas</h3>
+                    <div class="metric-value" id="totalAccounts">10</div>
+                    <div class="metric-detail">contas cadastradas</div>
+                </div>
+            </div>
+            
+            <div class="card summary-card">
+                <div class="card__body">
+                    <h3>Contas Ativas</h3>
+                    <div class="metric-value" id="activeAccounts">7</div>
+                    <div class="metric-variation positive" id="activeAccountsVariation">+2%</div>
+                </div>
+            </div>
+            
+            <div class="card summary-card">
+                <div class="card__body">
+                    <h3>Contas Suspensas</h3>
+                    <div class="metric-value" id="suspendedAccounts">1</div>
+                    <div class="metric-detail">necessita atenção</div>
+                </div>
+            </div>
+            
+            <div class="card summary-card">
+                <div class="card__body">
+                    <h3>Volume MT/MO</h3>
+                    <div class="metric-value" id="totalVolume">12.300</div>
+                    <div class="metric-variation positive" id="volumeVariation">+10%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="charts-grid">
+                <!-- Errors Chart -->
+                <div class="card chart-card">
+                    <div class="card__header">
+                        <h3>Erros MT/MO por Dia</h3>
+                        <div class="chart-controls">
+                            <select class="form-control" id="errorAccountFilter">
+                                <option value="all">Todas as Contas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container">
+                            <canvas id="errorsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channel Distribution -->
+                <div class="card chart-card">
+                    <div class="card__header">
+                        <h3>Distribuição por Canal</h3>
+                        <div class="metric-summary">
+                            <span class="metric-value" id="channelTotal">12.300</span>
+                            <span class="metric-variation positive" id="channelVariation">+10%</span>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container">
+                            <canvas id="channelsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Types Section -->
+        <section class="error-types-section">
+            <div class="card">
+                <div class="card__header">
+                    <h3>Tipos de Erros MT/MO</h3>
+                    <div class="metric-summary">
+                        <span class="metric-value" id="errorTypesTotal">120</span>
+                        <span class="metric-variation negative" id="errorTypesVariation">-5%</span>
+                        <span class="metric-detail">total no período</span>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="error-types-grid" id="errorTypesGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Errors Section -->
+        <section class="api-errors-section">
+            <div class="card">
+                <div class="card__header">
+                    <h3>Erros por API</h3>
+                    <div class="metric-summary">
+                        <span class="metric-value" id="apiErrorsTotal">15</span>
+                        <span class="metric-variation positive" id="apiErrorsVariation">+3%</span>
+                        <span class="metric-detail">total no período</span>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="api-errors-filters">
+                        <div class="api-filter-row">
+                            <input type="text" class="form-control api-search-input" id="apiSearchInput" placeholder="Buscar endpoints...">
+                            <select class="form-control api-status-filter" id="apiStatusFilter">
+                                <option value="all">Todos os Status</option>
+                                <option value="critical">Crítico</option>
+                                <option value="warning">Warning</option>
+                                <option value="normal">Normal</option>
+                            </select>
+                            <select class="form-control api-type-filter" id="apiTypeFilter">
+                                <option value="all">Todos os Tipos</option>
+                                <option value="payload">Payload</option>
+                                <option value="autenticação">Autenticação</option>
+                                <option value="timeout">Timeout</option>
+                                <option value="validação">Validação</option>
+                                <option value="autorização">Autorização</option>
+                            </select>
+                        </div>
+                        <div class="api-filter-summary">
+                            <span class="filter-count" id="apiFilterCount">Mostrando 7 de 7 endpoints</span>
+                        </div>
+                    </div>
+                    <div class="api-errors-list" id="apiErrorsList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Accounts Ranking -->
+        <section class="ranking-section">
+            <div class="card">
+                <div class="card__header">
+                    <h3>Ranking Top Contas</h3>
+                    <div class="table-controls">
+                        <input type="text" class="form-control" id="rankingSearch" placeholder="Buscar na tabela...">
+                        <button class="btn btn--outline btn--sm" id="exportBtn">
+                            Exportar CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="table-container">
+                        <table class="ranking-table" id="rankingTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="id">ID da Conta</th>
+                                    <th data-sort="name">Nome da Empresa</th>
+                                    <th data-sort="contacts">Contatos</th>
+                                    <th data-sort="users">Usuários</th>
+                                    <th data-sort="mtmo">Volume MT/MO</th>
+                                    <th data-sort="region">Região</th>
+                                    <th data-sort="lastActivity">Último Acesso</th>
+                                    <th data-sort="status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rankingTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="activity-section">
+            <div class="card">
+                <div class="card__header">
+                    <h3>Atividade Recente</h3>
+                    <button class="btn btn--outline btn--sm" id="refreshActivity">
+                        Atualizar
+                    </button>
+                </div>
+                <div class="card__body">
+                    <div class="activity-list" id="activityList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Account Detail Modal -->
+    <div class="modal" id="accountModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 id="modalTitle">Detalhes da Conta</h3>
+                <button class="modal__close" id="closeModal">×</button>
+            </div>
+            <div class="modal__body" id="modalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-panel__header">
+            <h3>Notificações</h3>
+            <button class="notification-panel__close" id="closeNotifications">×</button>
+        </div>
+        <div class="notification-panel__body">
+            <div class="notification-item">
+                <div class="notification-item__icon status--error">!</div>
+                <div class="notification-item__content">
+                    <h4>Erro crítico em API</h4>
+                    <p>Endpoint /api/v1/messages/send com 6 erros</p>
+                    <span class="notification-item__time">há 15 minutos</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-item__icon status--warning">⚠</div>
+                <div class="notification-item__content">
+                    <h4>Conta suspensa</h4>
+                    <p>GM - Logística foi suspensa</p>
+                    <span class="notification-item__time">há 2 horas</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-item__icon status--success">✓</div>
+                <div class="notification-item__content">
+                    <h4>Nova conta criada</h4>
+                    <p>StartupXYZ ativou trial</p>
+                    <span class="notification-item__time">há 1 dia</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
