@@ -1364,8 +1364,14 @@ select.form-control {
 /* Tables Section */
 .tables-section {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr !important;
   gap: var(--space-16);
+}
+
+/* Force table cards to stack vertically */
+.tables-section .table-card {
+  width: 100% !important;
+  grid-column: 1 / -1;
 }
 
 .table-header {
