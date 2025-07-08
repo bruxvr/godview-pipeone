@@ -833,15 +833,12 @@ function createAccountElement(account, depth) {
       <button class="account-users-btn" onclick="toggleUsersPanel('${
         account.id
       }', event)">
-        ${account.currentUsers}/${account.userLimit}
+        USERS
       </button>
       <button class="account-panel-btn" onclick="openAccountPanel('${
         account.id
       }', event)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="9" y1="3" x2="9" y2="21"></line>
-        </svg>
+        abrir painel
       </button>
     </div>
   `;
@@ -1476,15 +1473,15 @@ function getActivityIcon(type) {
 // Functions for sidebar buttons
 function toggleUsersPanel(accountId, event) {
   event.stopPropagation();
-  alert(`Usuários da conta ${accountId}`);
-}
-
-function openAccountPanel(accountId, event) {
-  event.stopPropagation();
   const account = appData.companies.find((acc) => acc.id === accountId);
   if (account) {
     selectAccount(account);
   }
+}
+
+function openAccountPanel(accountId, event) {
+  event.stopPropagation();
+  alert(`Abrir painel da conta ${accountId}`);
 }
 
 // Make functions available globally for onclick handlers
