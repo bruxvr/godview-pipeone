@@ -1,360 +1,490 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard de Contas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <button class="btn btn--secondary sidebar-toggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-                <h1>Dashboard de Contas</h1>
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="btn btn--secondary sidebar-toggle">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h1>Dashboard de Contas</h1>
+        </div>
+        <div class="header-right">
+          <div class="period-filter-container">
+            <select id="periodSelect" class="form-control period-select">
+              <option value="7">1 semana</option>
+              <option value="15">15 dias</option>
+              <option value="30" selected>1 mês</option>
+              <option value="custom">Personalizado</option>
+            </select>
+            <div id="customDateContainer" class="custom-date-container hidden">
+              <label for="customStartDate">Data Inicial:</label>
+              <input
+                type="date"
+                id="customStartDate"
+                class="form-control date-input"
+              />
+              <label for="customEndDate">Data Final:</label>
+              <input
+                type="date"
+                id="customEndDate"
+                class="form-control date-input"
+              />
             </div>
-            <div class="header-right">
-                <select class="form-control period-filter">
-                    <option value="7">Últimos 7 dias</option>
-                    <option value="30" selected>Últimos 30 dias</option>
-                    <option value="90">Últimos 90 dias</option>
-                    <option value="custom">Personalizado</option>
-                </select>
-                
-                <!-- Notifications Panel -->
-                <div class="notifications-container">
-                    <button class="btn btn--secondary notifications-toggle" onclick="toggleNotifications()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="notification-badge" id="notificationBadge">3</span>
-                    </button>
-                    <div class="notifications-panel hidden" id="notificationsPanel">
-                        <div class="notifications-header">
-                            <h4>Notificações</h4>
-                            <button class="btn btn--sm btn--secondary" onclick="markAllAsRead()">Marcar todas como lidas</button>
-                        </div>
-                        <div class="notifications-list" id="notificationsList">
-                            <!-- Notifications will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="btn btn--secondary theme-toggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-                <button class="btn btn--primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7,10 12,15 17,10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Exportar
-                </button>
-            </div>
-        </header>
+            <button class="btn btn--secondary apply-period-filter">
+              Aplicar
+            </button>
+          </div>
 
-        <!-- Sidebar Exatamente como está -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="search-container">
-                    <input type="text" class="form-control account-search" placeholder="Buscar contas...">
-                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <!-- Notifications Panel -->
+          <div class="notifications-container">
+            <button
+              class="btn btn--secondary notifications-toggle"
+              onclick="toggleNotifications()"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notification-badge" id="notificationBadge">3</span>
+            </button>
+            <div class="notifications-panel hidden" id="notificationsPanel">
+              <div class="notifications-header">
+                <h4>Notificações</h4>
+                <button
+                  class="btn btn--sm btn--secondary"
+                  onclick="markAllAsRead()"
+                >
+                  Marcar todas como lidas
+                </button>
+              </div>
+              <div class="notifications-list" id="notificationsList">
+                <!-- Notifications will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn--secondary theme-toggle">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <button class="btn btn--primary">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7,10 12,15 17,10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Exportar
+          </button>
+        </div>
+      </header>
+
+      <!-- Sidebar Exatamente como está -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="search-container">
+            <input
+              type="text"
+              class="form-control account-search"
+              placeholder="Buscar contas..."
+            />
+            <svg
+              class="search-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+          </div>
+          <div class="sidebar-actions">
+            <button class="btn btn--sm btn--secondary expand-all">
+              Expandir Tudo
+            </button>
+            <button class="btn btn--sm btn--secondary collapse-all">
+              Recolher Tudo
+            </button>
+          </div>
+        </div>
+        <div class="sidebar-content">
+          <div class="accounts-tree" id="accountsTree">
+            <!-- Hierarchical accounts tree will be populated by JavaScript -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="dashboard-grid">
+          <!-- Metrics Cards -->
+          <div class="metrics-section">
+            <div class="card metric-card">
+              <div class="card__body">
+                <div class="metric-header">
+                  <h3>Total de Contas</h3>
+                  <div class="status status--success">Ativo</div>
+                </div>
+                <div class="metric-value">
+                  <span class="value">10</span>
+                  <span class="variation positive">+2</span>
+                </div>
+              </div>
+            </div>
+            <div class="card metric-card">
+              <div class="card__body">
+                <div class="metric-header">
+                  <h3>Erros do Mês</h3>
+                  <div class="status status--warning">Atenção</div>
+                </div>
+                <div class="metric-value">
+                  <span class="value">120</span>
+                  <span class="variation negative">-5%</span>
+                </div>
+              </div>
+            </div>
+            <div class="card metric-card">
+              <div class="card__body">
+                <div class="metric-header">
+                  <h3>MTMO Total</h3>
+                  <div class="status status--success">Crescendo</div>
+                </div>
+                <div class="metric-value">
+                  <span class="value">12.3K</span>
+                  <span class="variation positive">+10%</span>
+                </div>
+              </div>
+            </div>
+            <div class="card metric-card">
+              <div class="card__body">
+                <div class="metric-header">
+                  <h3>Canais Ativos</h3>
+                  <div class="status status--info">Estável</div>
+                </div>
+                <div class="metric-value">
+                  <span class="value">22</span>
+                  <span class="variation neutral">0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="charts-section">
+            <div class="card chart-card">
+              <div class="card__body">
+                <div class="chart-header">
+                  <h3>Erros MT/MO por Dia</h3>
+                  <select
+                    class="form-control chart-account-filter"
+                    id="mtmoAccountFilter"
+                  >
+                    <option value="all">Todas as Contas</option>
+                    <option value="acc_001">TechCorp Enterprise</option>
+                    <option value="acc_006">Global Manufacturing</option>
+                    <option value="acc_009">StartupXYZ</option>
+                  </select>
+                </div>
+                <div class="chart-container">
+                  <canvas id="errorsChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card chart-card">
+              <div class="card__body">
+                <h3>Distribuição por Canal</h3>
+                <div class="chart-container">
+                  <canvas id="channelChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tables Section -->
+          <div class="tables-section">
+            <div class="card table-card">
+              <div class="card__body">
+                <div class="table-header">
+                  <h3>Ranking de Contas por MTMO</h3>
+                  <div class="table-controls">
+                    <div class="search-container">
+                      <input
+                        type="text"
+                        class="form-control table-search"
+                        id="accountTableSearch"
+                        placeholder="Buscar contas..."
+                      />
+                      <svg
+                        class="search-icon"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="M21 21l-4.35-4.35"></path>
-                    </svg>
+                      </svg>
+                    </div>
+                    <select
+                      class="form-control table-sort"
+                      id="accountTableSort"
+                    >
+                      <option value="mtmo-desc">Maiores MTMO</option>
+                      <option value="mtmo-asc">Menores MTMO</option>
+                      <option value="contacts-desc">Mais Contatos</option>
+                      <option value="contacts-asc">Menos Contatos</option>
+                      <option value="name-asc">Alfabética A-Z</option>
+                      <option value="name-desc">Alfabética Z-A</option>
+                    </select>
+                    <button
+                      class="btn btn--secondary export-csv"
+                      onclick="exportAccountsCSV()"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                        ></path>
+                        <polyline points="7,10 12,15 17,10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      CSV
+                    </button>
+                  </div>
                 </div>
-                <div class="sidebar-actions">
-                    <button class="btn btn--sm btn--secondary expand-all">Expandir Tudo</button>
-                    <button class="btn btn--sm btn--secondary collapse-all">Recolher Tudo</button>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Conta</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Contatos</th>
+                        <th>MTMO</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="accountsTable">
+                      <!-- Will be populated by JavaScript -->
+                    </tbody>
+                  </table>
                 </div>
+              </div>
             </div>
-            <div class="sidebar-content">
-                <div class="accounts-tree" id="accountsTree">
-                    <!-- Hierarchical accounts tree will be populated by JavaScript -->
+            <div class="card table-card">
+              <div class="card__body">
+                <div class="table-header">
+                  <h3>Erros de API por Endpoint</h3>
+                  <div class="table-controls">
+                    <select
+                      class="form-control table-filter"
+                      id="errorTypeFilter"
+                    >
+                      <option value="all">Todos os Tipos</option>
+                      <option value="payload">Payload</option>
+                      <option value="autenticação">Autenticação</option>
+                      <option value="timeout">Timeout</option>
+                      <option value="validação">Validação</option>
+                      <option value="autorização">Autorização</option>
+                    </select>
+                    <select
+                      class="form-control table-filter"
+                      id="errorStatusFilter"
+                    >
+                      <option value="all">Todos os Status</option>
+                      <option value="critical">Crítico</option>
+                      <option value="warning">Aviso</option>
+                      <option value="normal">Normal</option>
+                    </select>
+                    <select
+                      class="form-control table-filter"
+                      id="errorEndpointFilter"
+                    >
+                      <option value="all">Todos os Endpoints</option>
+                      <option value="/api/v1/messages/send">
+                        Messages Send
+                      </option>
+                      <option value="/api/v1/auth/token">Auth Token</option>
+                      <option value="/api/v1/webhooks/receive">Webhooks</option>
+                      <option value="/api/v1/accounts/validate">
+                        Accounts
+                      </option>
+                    </select>
+                  </div>
                 </div>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Endpoint</th>
+                        <th>Tipo de Erro</th>
+                        <th>Status</th>
+                        <th>Quantidade</th>
+                        <th>Último Erro</th>
+                      </tr>
+                    </thead>
+                    <tbody id="errorsTable">
+                      <!-- Will be populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-        </aside>
+          </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="dashboard-grid">
-                <!-- Metrics Cards -->
-                <div class="metrics-section">
-                    <div class="card metric-card">
-                        <div class="card__body">
-                            <div class="metric-header">
-                                <h3>Total de Contas</h3>
-                                <div class="status status--success">Ativo</div>
-                            </div>
-                            <div class="metric-value">
-                                <span class="value">10</span>
-                                <span class="variation positive">+2</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="card__body">
-                            <div class="metric-header">
-                                <h3>Erros do Mês</h3>
-                                <div class="status status--warning">Atenção</div>
-                            </div>
-                            <div class="metric-value">
-                                <span class="value">120</span>
-                                <span class="variation negative">-5%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="card__body">
-                            <div class="metric-header">
-                                <h3>MTMO Total</h3>
-                                <div class="status status--success">Crescendo</div>
-                            </div>
-                            <div class="metric-value">
-                                <span class="value">12.3K</span>
-                                <span class="variation positive">+10%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="card__body">
-                            <div class="metric-header">
-                                <h3>Canais Ativos</h3>
-                                <div class="status status--info">Estável</div>
-                            </div>
-                            <div class="metric-value">
-                                <span class="value">22</span>
-                                <span class="variation neutral">0%</span>
-                            </div>
-                        </div>
-                    </div>
+          <!-- Log Search Section -->
+          <div class="log-search-section">
+            <div class="card table-card">
+              <div class="card__body">
+                <div class="table-header">
+                  <h3>Pesquisa de Logs</h3>
+                  <div class="log-search-controls">
+                    <select class="form-control" id="logTypeFilter">
+                      <option value="all">Todos os Tipos</option>
+                      <option value="incoming">Incoming</option>
+                      <option value="outgoing">Outgoing</option>
+                    </select>
+                    <select class="form-control" id="logChannelFilter">
+                      <option value="all">Todos os Canais</option>
+                      <option value="whatsapp">WhatsApp</option>
+                      <option value="telegram">Telegram</option>
+                      <option value="messenger">Messenger</option>
+                      <option value="instagram">Instagram</option>
+                    </select>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="logDateFilter"
+                    />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="logClientIdFilter"
+                      placeholder="ID do Cliente"
+                    />
+                    <button class="btn btn--primary" onclick="searchLogs()">
+                      Pesquisar
+                    </button>
+                  </div>
                 </div>
-
-                <!-- Charts Section -->
-                <div class="charts-section">
-                    <div class="card chart-card">
-                        <div class="card__body">
-                            <div class="chart-header">
-                                <h3>Erros MT/MO por Dia</h3>
-                                <select class="form-control chart-account-filter" id="mtmoAccountFilter">
-                                    <option value="all">Todas as Contas</option>
-                                    <option value="acc_001">TechCorp Enterprise</option>
-                                    <option value="acc_006">Global Manufacturing</option>
-                                    <option value="acc_009">StartupXYZ</option>
-                                </select>
-                            </div>
-                            <div class="chart-container">
-                                <canvas id="errorsChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card chart-card">
-                        <div class="card__body">
-                            <h3>Distribuição por Canal</h3>
-                            <div class="chart-container">
-                                <canvas id="channelChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Timestamp</th>
+                        <th>Tipo</th>
+                        <th>Canal</th>
+                        <th>Cliente ID</th>
+                        <th>Conta</th>
+                        <th>Mensagem</th>
+                      </tr>
+                    </thead>
+                    <tbody id="logsTable">
+                      <!-- Will be populated by JavaScript -->
+                    </tbody>
+                  </table>
                 </div>
-
-                <!-- Tables Section -->
-                <div class="tables-section">
-                    <div class="card table-card">
-                        <div class="card__body">
-                            <div class="table-header">
-                                <h3>Ranking de Contas por MTMO</h3>
-                                <div class="table-controls">
-                                    <div class="search-container">
-                                        <input type="text" class="form-control table-search" id="accountTableSearch" placeholder="Buscar contas...">
-                                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="11" cy="11" r="8"></circle>
-                                            <path d="M21 21l-4.35-4.35"></path>
-                                        </svg>
-                                    </div>
-                                    <select class="form-control table-sort" id="accountTableSort">
-                                        <option value="mtmo-desc">Maiores MTMO</option>
-                                        <option value="mtmo-asc">Menores MTMO</option>
-                                        <option value="contacts-desc">Mais Contatos</option>
-                                        <option value="contacts-asc">Menos Contatos</option>
-                                        <option value="name-asc">Alfabética A-Z</option>
-                                        <option value="name-desc">Alfabética Z-A</option>
-                                    </select>
-                                    <button class="btn btn--secondary export-csv" onclick="exportAccountsCSV()">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                            <polyline points="7,10 12,15 17,10"></polyline>
-                                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                                        </svg>
-                                        CSV
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Conta</th>
-                                            <th>Tipo</th>
-                                            <th>Status</th>
-                                            <th>Contatos</th>
-                                            <th>MTMO</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="accountsTable">
-                                        <!-- Will be populated by JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card table-card">
-                        <div class="card__body">
-                            <div class="table-header">
-                                <h3>Erros de API por Endpoint</h3>
-                                <div class="table-controls">
-                                    <select class="form-control table-filter" id="errorTypeFilter">
-                                        <option value="all">Todos os Tipos</option>
-                                        <option value="payload">Payload</option>
-                                        <option value="autenticação">Autenticação</option>
-                                        <option value="timeout">Timeout</option>
-                                        <option value="validação">Validação</option>
-                                        <option value="autorização">Autorização</option>
-                                    </select>
-                                    <select class="form-control table-filter" id="errorStatusFilter">
-                                        <option value="all">Todos os Status</option>
-                                        <option value="critical">Crítico</option>
-                                        <option value="warning">Aviso</option>
-                                        <option value="normal">Normal</option>
-                                    </select>
-                                    <select class="form-control table-filter" id="errorEndpointFilter">
-                                        <option value="all">Todos os Endpoints</option>
-                                        <option value="/api/v1/messages/send">Messages Send</option>
-                                        <option value="/api/v1/auth/token">Auth Token</option>
-                                        <option value="/api/v1/webhooks/receive">Webhooks</option>
-                                        <option value="/api/v1/accounts/validate">Accounts</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Endpoint</th>
-                                            <th>Tipo de Erro</th>
-                                            <th>Status</th>
-                                            <th>Quantidade</th>
-                                            <th>Último Erro</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="errorsTable">
-                                        <!-- Will be populated by JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                <div class="pagination-controls" id="logsPagination">
+                  <button class="btn btn--secondary" onclick="previousPage()">
+                    Anterior
+                  </button>
+                  <span id="pageInfo">Página 1 de 1</span>
+                  <button class="btn btn--secondary" onclick="nextPage()">
+                    Próxima
+                  </button>
                 </div>
-
-                <!-- Log Search Section -->
-                <div class="log-search-section">
-                    <div class="card table-card">
-                        <div class="card__body">
-                            <div class="table-header">
-                                <h3>Pesquisa de Logs</h3>
-                                <div class="log-search-controls">
-                                    <select class="form-control" id="logTypeFilter">
-                                        <option value="all">Todos os Tipos</option>
-                                        <option value="incoming">Incoming</option>
-                                        <option value="outgoing">Outgoing</option>
-                                    </select>
-                                    <select class="form-control" id="logChannelFilter">
-                                        <option value="all">Todos os Canais</option>
-                                        <option value="whatsapp">WhatsApp</option>
-                                        <option value="telegram">Telegram</option>
-                                        <option value="messenger">Messenger</option>
-                                        <option value="instagram">Instagram</option>
-                                    </select>
-                                    <input type="date" class="form-control" id="logDateFilter">
-                                    <input type="text" class="form-control" id="logClientIdFilter" placeholder="ID do Cliente">
-                                    <button class="btn btn--primary" onclick="searchLogs()">Pesquisar</button>
-                                </div>
-                            </div>
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Timestamp</th>
-                                            <th>Tipo</th>
-                                            <th>Canal</th>
-                                            <th>Cliente ID</th>
-                                            <th>Conta</th>
-                                            <th>Mensagem</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="logsTable">
-                                        <!-- Will be populated by JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="pagination-controls" id="logsPagination">
-                                <button class="btn btn--secondary" onclick="previousPage()">Anterior</button>
-                                <span id="pageInfo">Página 1 de 1</span>
-                                <button class="btn btn--secondary" onclick="nextPage()">Próxima</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activity Section -->
-                <div class="activity-section">
-                    <div class="card activity-card">
-                        <div class="card__body">
-                            <h3>Atividade Recente</h3>
-                            <div class="activity-list" id="activityList">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-        </main>
+          </div>
+
+          <!-- Activity Section -->
+          <div class="activity-section">
+            <div class="card activity-card">
+              <div class="card__body">
+                <h3>Atividade Recente</h3>
+                <div class="activity-list" id="activityList">
+                  <!-- Will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- Modal for Account Details -->
     <div class="modal" id="accountModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Detalhes da Conta</h3>
-                <button class="modal-close" type="button">&times;</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Account details will be populated by JavaScript -->
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Detalhes da Conta</h3>
+          <button class="modal-close" type="button">&times;</button>
         </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Account details will be populated by JavaScript -->
+        </div>
+      </div>
     </div>
 
     <script src="app.js"></script>
-</body>
+  </body>
 </html>

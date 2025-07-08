@@ -648,6 +648,7 @@ function initializeApp() {
   initializeCharts();
   applyTheme();
   searchLogs();
+  initializeDateFilter();
 }
 
 function setupEventListeners() {
@@ -1482,6 +1483,134 @@ function openAccountPanel(accountId, event) {
   alert(`Abrir painel da conta ${accountId}`);
 }
 
+// Period filter functionality
+function initializeDateFilter() {
+  const periodSelect = document.getElementById("periodSelect");
+  const customDateContainer = document.getElementById("customDateContainer");
+  const customStartDateInput = document.getElementById("customStartDate");
+  const customEndDateInput = document.getElementById("customEndDate");
+  const applyButton = document.querySelector(".apply-period-filter");
+
+  // Set default dates
+  const today = new Date();
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(today.getDate() - 30);
+
+  customStartDateInput.value = thirtyDaysAgo.toISOString().split("T")[0];
+  customEndDateInput.value = today.toISOString().split("T")[0];
+
+  // Handle period select change
+  periodSelect.addEventListener("change", function () {
+    if (this.value === "custom") {
+      customDateContainer.classList.remove("hidden");
+    } else {
+      customDateContainer.classList.add("hidden");
+    }
+  });
+
+  // Apply filter function
+  function applyPeriodFilter() {
+    const selectedPeriod = periodSelect.value;
+    const today = new Date();
+    let startDate, endDate;
+
+    if (selectedPeriod === "custom") {
+      const customStartDate = customStartDateInput.value;
+      const customEndDate = customEndDateInput.value;
+
+      if (!customStartDate || !customEndDate) {
+        alert("Por favor, selecione ambas as datas");
+        return;
+      }
+
+      startDate = new Date(customStartDate);
+      endDate = new Date(customEndDate);
+
+      if (startDate > endDate) {
+        alert("A data inicial deve ser anterior ou igual à data final");
+        return;
+      }
+
+      if (endDate > today) {
+        alert("A data final não pode ser posterior a hoje");
+        return;
+      }
+    } else {
+      // Calculate start date based on selected period
+      const daysAgo = parseInt(selectedPeriod);
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - daysAgo);
+      endDate = today;
+    }
+
+    const startDateStr = startDate.toISOString().split("T")[0];
+    const endDateStr = endDate.toISOString().split("T")[0];
+
+    console.log(`Filtro aplicado: ${startDateStr} até ${endDateStr}`);
+
+    // Refresh dashboard with the new date range
+    refreshDashboardWithDateRange(startDateStr, endDateStr, selectedPeriod);
+  }
+
+  // Add event listener to apply button
+  applyButton.addEventListener("click", applyPeriodFilter);
+
+  // Add event listeners for Enter key on custom date inputs
+  customStartDateInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      applyPeriodFilter();
+    }
+  });
+
+  customEndDateInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      applyPeriodFilter();
+    }
+  });
+
+  // Add event listener for period select change to auto-apply for non-custom options
+  periodSelect.addEventListener("change", function () {
+    if (this.value !== "custom") {
+      // Auto-apply for predefined periods
+      setTimeout(applyPeriodFilter, 100);
+    }
+  });
+
+  // Apply default filter (1 month)
+  applyPeriodFilter();
+}
+
+function refreshDashboardWithDateRange(startDate, endDate, period) {
+  // This function would typically filter the data based on the date range
+  // and refresh all dashboard components
+  console.log(
+    `Refreshing dashboard for period: ${startDate} to ${endDate} (${period})`
+  );
+
+  let periodText;
+  switch (period) {
+    case "7":
+      periodText = "1 semana";
+      break;
+    case "15":
+      periodText = "15 dias";
+      break;
+    case "30":
+      periodText = "1 mês";
+      break;
+    case "custom":
+      periodText = `período personalizado (${startDate} até ${endDate})`;
+      break;
+    default:
+      periodText = period;
+  }
+
+  // Example: You could filter the appData based on dates here
+  // and then call the existing functions to rebuild the dashboard
+
+  // Dashboard updated silently - no popup notification
+}
+
 // Make functions available globally for onclick handlers
 window.toggleAccountExpansion = toggleAccountExpansion;
 window.selectAccount = selectAccount;
@@ -1493,3 +1622,5 @@ window.previousPage = previousPage;
 window.nextPage = nextPage;
 window.toggleUsersPanel = toggleUsersPanel;
 window.openAccountPanel = openAccountPanel;
+window.initializeDateFilter = initializeDateFilter;
+window.refreshDashboardWithDateRange = refreshDashboardWithDateRange;
