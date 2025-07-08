@@ -1364,7 +1364,7 @@ select.form-control {
 /* Tables Section */
 .tables-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--space-16);
 }
 
