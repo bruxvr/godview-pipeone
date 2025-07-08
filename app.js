@@ -825,8 +825,6 @@ function createAccountElement(account, depth) {
         <span class="account-status account-status--${
           account.status
         }">${getStatusText(account.status)}</span>
-        <span>${formatNumber(account.contacts)} contatos</span>
-        <span>${account.region}</span>
       </div>
     </div>
     <div class="account-actions">
