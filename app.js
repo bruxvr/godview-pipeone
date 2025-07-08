@@ -539,7 +539,7 @@ const appData = {
       { channel: "WhatsApp", active: 8, mtmo: 5535, percentage: 45 },
       { channel: "SMS", active: 6, mtmo: 3690, percentage: 30 },
       { channel: "Email", active: 5, mtmo: 2460, percentage: 20 },
-      { channel: "Push", active: 3, mtmo: 615, percentage: 5 },
+      { channel: "Widget", active: 3, mtmo: 615, percentage: 5 },
     ],
   },
 
