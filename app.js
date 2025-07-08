@@ -3,7 +3,7 @@ const appData = {
   companies: [
     {
       id: "acc_001",
-      name: "TechCorp Enterprise",
+      name: "Cantina do Marcio",
       type: "enterprise",
       status: "active",
       parent: null,
@@ -45,7 +45,7 @@ const appData = {
     },
     {
       id: "acc_002",
-      name: "TechCorp - Desenvolvimento",
+      name: "Unidade Ingá",
       type: "department",
       status: "active",
       parent: "acc_001",
@@ -79,7 +79,7 @@ const appData = {
     },
     {
       id: "acc_003",
-      name: "TechCorp - Marketing",
+      name: "Unidade Icaraí",
       type: "department",
       status: "active",
       parent: "acc_001",
@@ -113,7 +113,7 @@ const appData = {
     },
     {
       id: "acc_004",
-      name: "TechCorp - Vendas",
+      name: "Unidade Centro",
       type: "department",
       status: "limited",
       parent: "acc_001",
@@ -147,7 +147,7 @@ const appData = {
     },
     {
       id: "acc_005",
-      name: "TechCorp - Equipe QA",
+      name: "Subunidade",
       type: "team",
       status: "active",
       parent: "acc_002",
@@ -181,7 +181,7 @@ const appData = {
     },
     {
       id: "acc_006",
-      name: "Global Manufacturing Ltd",
+      name: "Boteco do Gabriel",
       type: "enterprise",
       status: "active",
       parent: null,
@@ -215,7 +215,7 @@ const appData = {
     },
     {
       id: "acc_007",
-      name: "GM - Produção",
+      name: "Unidade 1",
       type: "department",
       status: "active",
       parent: "acc_006",
@@ -249,7 +249,7 @@ const appData = {
     },
     {
       id: "acc_008",
-      name: "GM - Logística",
+      name: "Unidade 2",
       type: "department",
       status: "suspended",
       parent: "acc_006",
@@ -275,7 +275,7 @@ const appData = {
     },
     {
       id: "acc_009",
-      name: "StartupXYZ",
+      name: "Lojinha da Bruna",
       type: "startup",
       status: "trial",
       parent: null,
@@ -309,7 +309,7 @@ const appData = {
     },
     {
       id: "acc_010",
-      name: "Individual - João Silva",
+      name: "Adega do João",
       type: "individual",
       status: "active",
       parent: null,
